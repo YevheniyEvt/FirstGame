@@ -37,46 +37,69 @@ class Line:
     def change_x(self):
         self.x += self.size
 
+    def change_y(self):
+        self.y += self.size
 
 
 
-def draw_field(game_field):
-    line = Line(0,0,(102, 99, 89), 2)
-    lines = []
-    colum_number = int(game_field.width/line.size)
-    row_number = int(game_field.height/line.size)
-
+def create_vertical_lines(game_field):
+    colum_number = int(game_field.width/SIZE)
+    x = 0
     for number in range(colum_number):
-        line.draw_vertical_line(WINDOW)
-        line.change_x()
-    line.x = 0
+        line = Line(x, 0, (102, 99, 89), 2)
+        x += line.size
+        yield line
 
-    for number_2 in range(row_number):
-        line.draw_horizontal_line(WINDOW)
-        line.y += SIZE
+def create_horizontal_lines(game_field):
+    row_number = int(game_field.height/SIZE)
+    y = 0
+    for number in range(row_number):
+        line = Line(0, y, (102, 99, 89), 2)
+        y += line.size
+        yield line
 
 
-def draw_window(game_field, pre_game_field):
+
+def draw_window(game_field, pre_game_field, vertical_lines, horizontal_lines):
+
     pygame.draw.rect(WINDOW, GAME_FIELD_COLOR, game_field)
     pygame.draw.rect(WINDOW, PRE_GAME_FIELD_COLOR, pre_game_field)
+
+    for line in vertical_lines:
+        line.draw_vertical_line(WINDOW)
+    for line in horizontal_lines:
+        line.draw_horizontal_line(WINDOW)
+
+    pygame.display.update()
+
+
+
 
 def main():
     clock = pygame.time.Clock()
     run = True
 
-    game_field = pygame.Rect(0,0,GAME_FIELD_WIDTH,GAME_FIELD_HEIGHT)
-    pre_game_field = pygame.Rect(GAME_FIELD_WIDTH, 0, PRE_GAME_WIDTH,PRE_GAME_HEIGHT)
+    game_field = pygame.Rect(0, 0, GAME_FIELD_WIDTH, GAME_FIELD_HEIGHT)
+    pre_game_field = pygame.Rect(GAME_FIELD_WIDTH, 0, PRE_GAME_WIDTH, PRE_GAME_HEIGHT)
 
+
+    vertical_lines = [line for line in create_vertical_lines(game_field)]
+    horizontal_lines = [line for line in create_horizontal_lines(game_field)]
+    print(vertical_lines)
+    print(horizontal_lines)
 
     while run:
         clock.tick(FPS)
         event = pygame.event.poll()
         if event.type == pygame.QUIT:
-            run = False
             break
 
-        draw_window(game_field, pre_game_field)
-        draw_field(game_field)
+        draw_window(
+            game_field,
+            pre_game_field,
+            vertical_lines,
+            horizontal_lines,
+        )
 
         pygame.display.update()
 
