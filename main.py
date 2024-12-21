@@ -19,6 +19,7 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
 
 list_of_termino_in_the_field = []
+list_of_rectangle_in_the_field = []
 
 class Line:
     size = SIZE
@@ -74,7 +75,7 @@ def draw_window(game_field,
                 ):
     WINDOW.fill((0, 0, 0))
 
-    color = (163, 181, 49)
+    color = (0, 119, 255)
     pygame.draw.rect(WINDOW, GAME_FIELD_COLOR, game_field)
     #pygame.draw.rect(WINDOW, PRE_GAME_FIELD_COLOR, pre_game_field,)
 
@@ -88,9 +89,9 @@ def draw_window(game_field,
 
     #"""Зробити випадковий вибір зі списка можливих фігур"""
 
-    for termino in list_of_termino_in_the_field:
-        for rectangle in termino:
-            pygame.draw.rect(WINDOW, o_tetromino.color, rectangle)
+    for rectangle in list_of_rectangle_in_the_field:
+
+        pygame.draw.rect(WINDOW, o_tetromino.color, rectangle)
 
     # for rectangle in o_tetromino.square_O_tetromino:
     #     pygame.draw.rect(WINDOW, o_tetromino.color, rectangle)
@@ -118,19 +119,53 @@ def mouse_in_rectangle(mouse_x, mouse_y, rectangles):
             return True
     return False
 
+def tetromino_not_in_tetromino(tetromino):
+    #scale = SIZE*0.4
+    for rectangle in list_of_rectangle_in_the_field:
+        if tetromino.start_x + tetromino.size*2 > rectangle[0] > tetromino.start_x and \
+             tetromino.start_y + tetromino.size*2 > rectangle[1] > tetromino.start_y or \
+             tetromino.start_x + tetromino.size*2 > rectangle[0]+SIZE > tetromino.start_x and \
+             tetromino.start_y + tetromino.size*2 > rectangle[1] > tetromino.start_y or \
+             tetromino.start_x + tetromino.size*2 > rectangle[0]+SIZE  > tetromino.start_x and \
+             tetromino.start_y + tetromino.size*2 > rectangle[1]+SIZE > tetromino.start_y or \
+             tetromino.start_x + tetromino.size*2 > rectangle[0] > tetromino.start_x and \
+             tetromino.start_y + tetromino.size*2 > rectangle[1]+SIZE > tetromino.start_y:
+            #print(rectangle[0])
+            #print(tetromino.start_x)
+            return False
+    return True
 
 
 def tetromino_in_the_field(o_tetromino, mouse_x, mouse_y):
-    for termino in list_of_termino_in_the_field:
-        print(list_of_termino_in_the_field)
-        if len(list_of_termino_in_the_field) > 0:
-            if (o_tetromino.start_x == termino[0][0] and
-                    o_tetromino.start_y == termino[0][1] and
+    for termino in list_of_rectangle_in_the_field:
+
+        #print(list_of_termino_in_the_field)
+        if len(list_of_rectangle_in_the_field) > 0:
+            if (o_tetromino.start_x == termino[0] and
+                    o_tetromino.start_y == termino[1] and
                     o_tetromino.start_x < GAME_FIELD_WIDTH):
                 return True
             # elif mouse_in_rectangle(mouse_x, mouse_y, termino):
             #     return True
     return False
+
+def tetromino_within_window(o_tetromino):
+    if o_tetromino.start_x < 0 or \
+        o_tetromino.start_y < 0  or \
+        o_tetromino.start_x+o_tetromino.size*2 > WIDTH or \
+        o_tetromino.start_y+o_tetromino.size*2 > HEIGHT or \
+            not pygame.mouse.get_focused():
+        return False
+    return True
+
+def stick_torentino_to_square(list_of_rect):
+    size = list_of_rect[0][2]*0.99
+    for index, rectangle in enumerate(list_of_rect):
+        rectangle_x = round(rectangle[0]/size)*size*1.05
+        rectangle_y = round(rectangle[1]/size)*size*1.05
+        list_of_rectangle_in_the_field.append((rectangle_x, rectangle_y, size, size))
+    #print(list_of_rectangle_in_the_field)
+
 
 def main():
     clock = pygame.time.Clock()
@@ -159,22 +194,31 @@ def main():
             # print(f"на  полі: {len(list_of_termino_in_the_field)}")
 
             mouse_x, mouse_y = pygame.mouse.get_pos()
+            mouse_in = mouse_in_rectangle(mouse_x, mouse_y, o_tetromino.square_O_tetromino)
+
             if pygame.mouse.get_pressed()[0] and not tetromino_in_the_field(o_tetromino, mouse_x, mouse_y):
 
                 event_start_x, event_start_y = pygame.mouse.get_rel()
-                print(f"x: {event_start_x}, y: {event_start_y}")
-                mouse_in = mouse_in_rectangle(mouse_x, mouse_y, o_tetromino.square_O_tetromino)
+                #print(f"x: {event_start_x}, y: {event_start_y}")
                 if event.type == pygame.MOUSEMOTION and mouse_in and abs(event_start_x) < 100 and abs(event_start_y) < 100:
                     o_tetromino.square_O_tetromino.clear()
-
-                    o_tetromino.start_x = o_tetromino.start_x + event_start_x
-                    o_tetromino.start_y = o_tetromino.start_y + event_start_y
+                    if tetromino_within_window(o_tetromino):
+                        o_tetromino.start_x = o_tetromino.start_x + event_start_x
+                        o_tetromino.start_y = o_tetromino.start_y + event_start_y
+                    else:
+                        o_tetromino.start_x = o_tetromino.start_x - event_start_x*2
+                        o_tetromino.start_y = o_tetromino.start_y - event_start_y*2
                     o_tetromino.square_O_tetromino.clear()
                     o_tetromino.draw_Otetromino(WINDOW)
 
-            elif event.type == pygame.MOUSEBUTTONUP and not tetromino_in_the_field(o_tetromino, mouse_x, mouse_y) and o_tetromino.start_x+SIZE*2 < GAME_FIELD_WIDTH:
+            elif event.type == pygame.MOUSEBUTTONUP and \
+                    not tetromino_in_the_field(o_tetromino, mouse_x, mouse_y) and \
+                    tetromino_not_in_tetromino(o_tetromino) and \
+                    o_tetromino.start_x+SIZE*2*0.98 < GAME_FIELD_WIDTH*1.01:
                 if mouse_in:
                     list_of_termino_in_the_field.append(o_tetromino.square_O_tetromino[:4])
+                    stick_torentino_to_square(o_tetromino.square_O_tetromino[:4])
+
                 o_tetromino.square_O_tetromino.clear()
                 o_tetromino.start_x = SIZE * 10
                 o_tetromino.start_y = SIZE
@@ -196,7 +240,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-# потрібно зробити обмеження щоб не виходив за екран, зробити нормальне обмеження по переміщенню.
 # додати зміну координат в клас
 # зробити прилоипання до координат клітинок
 

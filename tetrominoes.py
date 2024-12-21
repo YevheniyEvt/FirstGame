@@ -15,7 +15,7 @@ T_TETROMINO_IMG = []
 
 class Tetromino:
     color = (163, 181, 49)
-    size = SIZE
+    size = SIZE*0.97
 
 
 class Otetromino(Tetromino):
