@@ -1,3 +1,3 @@
 My first pet proect.
-It`s a simple game.
-It`s not finished yet.
+It is a simple game.
+It is not finished yet.
