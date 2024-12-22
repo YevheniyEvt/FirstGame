@@ -2,8 +2,8 @@ import pygame
 import random
 import os
 
-SIZE = 60
-
+SIZE = 80
+SCALE = 10
 O_TETROMINO_IMG = []
 I_TETROMINO_IMG = []
 L_TETROMINO_IMG = []
@@ -23,7 +23,7 @@ class Otetromino(Tetromino):
 
     def __init__(self):
         self.o_img = O_TETROMINO_IMG
-        self.start_x = self.size * 10
+        self.start_x = self.size * SCALE
         self.start_y = self.size
 
 
