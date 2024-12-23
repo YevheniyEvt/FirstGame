@@ -17,7 +17,7 @@ WIDTH, HEIGHT = tetrominoes.WIDTH, tetrominoes.HEIGHT
 
 GAME_FIELD_WIDTH, GAME_FIELD_HEIGHT = tetrominoes.GAME_FIELD_WIDTH, tetrominoes.GAME_FIELD_HEIGHT
 PRE_GAME_WIDTH, PRE_GAME_HEIGHT = tetrominoes.PRE_GAME_WIDTH, tetrominoes.PRE_GAME_HEIGHT
-SCORE_FIELD_WIDTH, SCORE_FIELD_HEIGHT = PRE_GAME_WIDTH, GAME_FIELD_HEIGHT - PRE_GAME_HEIGHT
+SCORE_FIELD_WIDTH, SCORE_FIELD_HEIGHT = tetrominoes.SCORE_FIELD_WIDTH, tetrominoes.SCORE_FIELD_HEIGHT
 
 
 
@@ -35,6 +35,7 @@ FONT = pygame.font.SysFont('comicsans' ,size_font)
 
 list_of_tetromino_in_the_field = []
 list_of_rectangle_in_the_field = rectangleInField.list_of_rectangle_in_the_field
+
 clas_tetromino = [Itetromino(), ItetrominoTwo(), Otetromino(), Stetromino(), StetrominoTwo(), StetrominoThree(),
                 StetrominoFour(), Ltetromino(), LtetrominoTwo(), Jtetromino(), JtetrominoTwo(), JtetrominoThree(), JtetrominoFour(), Ttetromino()]
 
@@ -46,8 +47,6 @@ def draw_window(game_field,
                 score_total, score_field,
                 ):
 
-    #WINDOW.fill((0, 0, 0))
-
     pygame.draw.rect(WINDOW, GAME_FIELD_COLOR, game_field)
     pygame.draw.rect(WINDOW, PRE_GAME_FIELD_COLOR, pre_game_field)
 
@@ -58,6 +57,7 @@ def draw_window(game_field,
         pygame.draw.rect(WINDOW, RECTANGLE_IN_THE_FIELD_COLOR, rectangle)
 
     score(score_total, score_field)
+
     tetromino.draw_tetromino(WINDOW)
     pygame.display.update()
 
@@ -66,7 +66,6 @@ def create_square():
     size = SIZE
     start_x = 0
     start_y = 0
-    print(int(tetrominoes.GAME_FIELD_HEIGHT / size))
 
     for i in range(int(GAME_FIELD_WIDTH/size)):
         for j in range(int(GAME_FIELD_HEIGHT/size)):
@@ -90,7 +89,7 @@ def mouse_in_rectangle(mouse_x, mouse_y, rectangles):
 def tetromino_not_in_tetromino(tetromino):
 
     for rectangle in list_of_rectangle_in_the_field:
-        for tetromino_rect in tetromino.square_tetromino:
+        for tetromino_rect in tetromino.get_square():
             if tetromino_rect[0] + tetromino_rect[2]  > rectangle[0] > tetromino_rect[0] and \
                  tetromino_rect[1] + tetromino_rect[2] > rectangle[1] > tetromino_rect[1] or \
                  tetromino_rect[0] + tetromino_rect[2] > rectangle[0]+tetromino_rect[2] > tetromino_rect[0] and \
@@ -101,84 +100,72 @@ def tetromino_not_in_tetromino(tetromino):
                  tetromino_rect[1] + tetromino_rect[2] > rectangle[1]+tetromino_rect[2] > tetromino_rect[1]:
                 return False
     return True
-    # for rectangle in list_of_rectangle_in_the_field:
-    #     if tetromino.start_x + tetromino.size*2 > rectangle[0] > tetromino.start_x and \
-    #          tetromino.start_y + tetromino.size*2 > rectangle[1] > tetromino.start_y or \
-    #          tetromino.start_x + tetromino.size*2 > rectangle[0]+SIZE > tetromino.start_x and \
-    #          tetromino.start_y + tetromino.size*2 > rectangle[1] > tetromino.start_y or \
-    #          tetromino.start_x + tetromino.size*2 > rectangle[0]+SIZE  > tetromino.start_x and \
-    #          tetromino.start_y + tetromino.size*2 > rectangle[1]+SIZE > tetromino.start_y or \
-    #          tetromino.start_x + tetromino.size*2 > rectangle[0] > tetromino.start_x and \
-    #          tetromino.start_y + tetromino.size*2 > rectangle[1]+SIZE > tetromino.start_y:
-    #         return False
-    # return True
 
 
 def tetromino_in_the_field(tetromino):
 
     for rectangle in list_of_rectangle_in_the_field:
         if len(list_of_rectangle_in_the_field) > 0:
-            if (tetromino.start_x == rectangle[0] and
-                    tetromino.start_y == rectangle[1] and
-                    tetromino.start_x < GAME_FIELD_WIDTH):
+            if (tetromino.get_start_x() == rectangle[0] and
+                    tetromino.get_start_y() == rectangle[1] and
+                    tetromino.get_start_x() < GAME_FIELD_WIDTH):
                 return True
     return False
 
 
 def tetromino_within_window(tetromino):
-    for tetromino_rect in tetromino.square_tetromino:
-        if tetromino_rect[0] < 0 or \
-            tetromino_rect[1] < 0 or \
-            tetromino_rect[0] + tetromino_rect[3] > WIDTH or \
-            (tetromino_rect[1] + tetromino_rect[3])*0.98 > HEIGHT or \
-            not pygame.mouse.get_focused():
+
+    for tetromino_rect in tetromino.get_square():
+        if tetromino_rect[0] < 0.5:
+            tetromino.set_start_x(tetromino.get_start_x()+0.5)
             return False
+        elif tetromino_rect[1] < 0.5:
+            tetromino.set_start_y(tetromino.get_start_y()+0.5)
+            return False
+        elif tetromino_rect[0] + tetromino.get_size() > (WIDTH-0.5):
+            tetromino.set_start_x(tetromino.get_start_x()-0.5)
+            return False
+        elif tetromino_rect[1] + tetromino.get_size() > (HEIGHT-0.5):
+            tetromino.set_start_y(tetromino.get_start_y()-0.5)
+            return False
+
     return True
 
-    # if tetromino.start_x < 0 or \
-    #     tetromino.start_y < 0  or \
-    #     tetromino.start_x+tetromino.size*2 > WIDTH or \
-    #     tetromino.start_y+tetromino.size*2 > HEIGHT or \
-    #         not pygame.mouse.get_focused():
-    #     return False
-    # return True
+def stick_tetromino_to_square(tetromino):
 
-
-def stick_tetromino_to_square(list_of_rect):
-
-    size = round(list_of_rect[0][2]*0.999)
-    for rectangle in list_of_rect:
-        rectangle_x = round(rectangle[0]/size)*size*1.04
-        rectangle_y = round(rectangle[1]/size)*size*1.04
-        list_of_rectangle_in_the_field.append((rectangle_x, rectangle_y, size, size))
-        #print(list_of_rectangle_in_the_field)
+    size = round(tetromino.get_square()[0][2])
+    if tetromino.get_start_x() >= 0 and tetromino.get_start_y() >= 0:
+        for rectangle in tetromino.get_square():
+            rectangle_x = int(rectangle[0]/size)*size*1.04
+            rectangle_y = int(rectangle[1]/size)*size*1.04
+            list_of_rectangle_in_the_field.append((rectangle_x, rectangle_y, size, size))
 
 
 def move_tetromino(event_start_x, event_start_y, tetromino):
 
     if tetromino_within_window(tetromino):
-        tetromino.start_x = int(tetromino.start_x + event_start_x)
-        tetromino.start_y = int(tetromino.start_y + event_start_y)
-    else:
-        tetromino.start_x = tetromino.start_x - event_start_x * 2
-        tetromino.start_y = tetromino.start_y - event_start_y * 2
-    tetromino.square_tetromino.clear()
+        tetromino.set_start_x(int(tetromino.get_start_x() + event_start_x))
+        tetromino.set_start_y(int(tetromino.get_start_y() + event_start_y))
+
     tetromino.draw_tetromino(WINDOW)
 
 
 def drop_tetromino(tetromino, mouse_in_rect):
 
-    if mouse_in_rect and tetromino.start_x+SIZE*2*0.98 < int(GAME_FIELD_WIDTH/SIZE)*SIZE and tetromino.start_y + SIZE*2*0.97 < int(GAME_FIELD_HEIGHT/SIZE)*SIZE:
-        list_of_tetromino_in_the_field.append(tetromino.square_tetromino[:4])
-        stick_tetromino_to_square(tetromino.square_tetromino[:4])
+    if (mouse_in_rect and
+            tetromino.get_start_x()+tetromino.get_size()*tetromino.get_index_width() < int(GAME_FIELD_WIDTH / SIZE)*SIZE*0.97 and
+            tetromino.get_start_y() + tetromino.get_size()*tetromino.get_index_height() < int(GAME_FIELD_HEIGHT / SIZE)*SIZE)*0.99:
 
-    tetromino.square_tetromino.clear()
-    tetromino.start_x = (SIZE*0.97) * SCALE
-    tetromino.start_y = SIZE*0.97
+        list_of_tetromino_in_the_field.append(tetromino.get_square())
+        stick_tetromino_to_square(tetromino)
+
+    #tetromino.delete_tetromino()
+    tetromino.set_start_x((SIZE * 0.97) * SCALE)
+    tetromino.set_start_y(SIZE * 0.97)
     tetromino.draw_tetromino(WINDOW)
 
-def chose_tetromino(tetrominoes):
-    tetromino = random.choice(tetrominoes)
+def chose_tetromino(tetrominos):
+    tetromino = random.choice(tetrominos)
     #tetromino = Itetromino()
     return tetromino
 
@@ -201,23 +188,24 @@ def main():
 
     field_squares = [square for square in create_square()]
 
-    #tetromino =  tetrominoes.Itetromino()
-    tetromino = random.choice(clas_tetromino)
+    tetromino =  tetrominoes.Otetromino()
+    #tetromino = random.choice(clas_tetromino)
 
     #pygame.display.update()
 
     while run:
         clock.tick(FPS)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            mouse_in_rect = mouse_in_rectangle(mouse_x, mouse_y, tetromino.square_tetromino)
+            mouse_in_rect = mouse_in_rectangle(mouse_x, mouse_y, tetromino.get_square())
 
             if pygame.mouse.get_pressed()[0] and not tetromino_in_the_field(tetromino) and mouse_in_rect:
                 event_start_x, event_start_y = pygame.mouse.get_rel()
+
+
                 #pygame.mouse.set_visible(0)
 
                 if event.type == pygame.MOUSEMOTION  and abs(event_start_x) < 100 and abs(event_start_y) < 100:
@@ -229,11 +217,13 @@ def main():
                     tetromino_not_in_tetromino(tetromino)):
 
                 drop_tetromino(tetromino, mouse_in_rect)
-                tetromino = chose_tetromino(clas_tetromino)
+                #tetromino = chose_tetromino(clas_tetromino)
+
+            # else:
+            #     pygame.mouse.set_visible(1)
 
         score_total += rectangleInField.filling_line(list_of_rectangle_in_the_field)
 
-            #else:pygame.mouse.set_visible(1)
         draw_window(
             game_field,
             field_squares,
@@ -243,12 +233,8 @@ def main():
 
         )
 
-
-
-        #print(score_total)
-
     pygame.quit()
 
 if __name__ == "__main__":
     main()
-# баг виходу фігури за межі поля. Баг прилипання фігури поза межами ігрового поля(на преігровому полі), , не прилипання фігуру біля краю поляя
+# виправити з не вірним малюванням фігур. Початок зміщений. (КВАДРАТ)

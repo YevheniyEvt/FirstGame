@@ -1,14 +1,9 @@
-import time
 import tetrominoes
 import pygame
-pygame.font.init()
+
 
 size = tetrominoes.SIZE
 list_of_rectangle_in_the_field = []
-FONT = pygame.font.SysFont('comicsans' ,40)
-SCORE = 0
-
-
 
 vertical_line_1 = []
 vertical_line_2 = []
@@ -135,9 +130,10 @@ def check_line():
 def delete_line(line):
         for i in range(len(line)):
             rect = line[0]
-            if rect in list_of_rectangle_in_the_field:
+            try:
                 list_of_rectangle_in_the_field.remove(rect)
-            line.remove(rect)
-
+                line.remove(rect)
+            except ValueError:
+                print(f"rect:{rect} not in {list_of_rectangle_in_the_field}")
 
 
