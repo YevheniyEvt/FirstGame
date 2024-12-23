@@ -1,5 +1,5 @@
 import pygame
-
+import time
 # class Line:
 #     size = SIZE
 #
@@ -75,12 +75,13 @@ def main():
 
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if pygame.mouse.get_pressed()[0]:  # and not tetromino_in_the_field(o_tetromino, mouse_x, mouse_y):
-
+                pygame.mouse.set_visible(0)
                 event_start_x, event_start_y = pygame.mouse.get_rel()
                 if event.type == pygame.MOUSEMOTION:
 
                     start_x = start_x + event_start_x
                     start_y = start_y + event_start_y
+            else:pygame.mouse.set_visible(1)
 
         draw()
         pygame.display.update()
