@@ -1,8 +1,8 @@
 import pygame
 
 
-SIZE = 60
-SCALE =10
+SIZE = 40
+SCALE =15
 WIDTH, HEIGHT = SIZE*SCALE*1.3, SIZE*SCALE
 
 GAME_FIELD_WIDTH, GAME_FIELD_HEIGHT = WIDTH - (SIZE * (WIDTH/SIZE)*0.3), HEIGHT
@@ -11,8 +11,9 @@ SCORE_FIELD_WIDTH, SCORE_FIELD_HEIGHT = PRE_GAME_WIDTH, GAME_FIELD_HEIGHT - PRE_
 
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 
+
 class Tetromino:
-    _color = (163, 181, 49)
+    _color = (149, 52, 235)
     _size = SIZE * 0.97
     _start_x = int(_size * SCALE)
     _start_y = int(_size)
@@ -29,19 +30,19 @@ class Tetromino:
         return self._start_x
     def get_start_y(self):
         return self._start_y
-    
+
     def set_square(self, rectangles):
         self._square_tetromino = rectangles
-    
+
     def get_square(self):
         return self._square_tetromino
-    
+
     def add_rectangle(self, rect):
         self._square_tetromino.append(rect)
-        
+
     def delete_tetromino(self):
         self._square_tetromino = []
-        
+
     def set_color(self, color):
         self._color = color
 
@@ -60,12 +61,14 @@ class Tetromino:
     def draw_tetromino(self, window):
         self.create_tetromino()
         for rectangle in self.get_square():
-            pygame.draw.rect(window, self.get_color(), rectangle)
+            pygame.draw.rect(window, self.get_color(), rectangle,10,10)
+
 
 class Otetromino(Tetromino):
     _square_tetromino = []
     _index_height = 2
     _index_width = 2
+
     def create_tetromino(self):
         self.delete_tetromino()
         for i in range(self.get_index_height()):
@@ -80,6 +83,7 @@ class Itetromino(Tetromino):
     _square_tetromino = []
     _index_height = 3
     _index_width = 1
+
     def create_tetromino(self):
         self.delete_tetromino()
         for i in range(self.get_index_height()):
@@ -87,174 +91,243 @@ class Itetromino(Tetromino):
             self.add_rectangle(rect)
 
 
-
-
-
 class ItetrominoTwo(Tetromino):
     _square_tetromino = []
     _index_height = 1
     _index_width = 3
 
-    def draw_tetromino(self, window):
+    def create_tetromino(self):
+        self.delete_tetromino()
         for i in range(self.get_index_width()):
-            rect = (self._start_x + i * self._size, self._start_y + self._size * 0.5, self._size, self._size)
+            rect = (self._start_x + i * self._size, self._start_y, self._size, self._size)
             self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:3])
-            self.set_square(self.get_square()[:3])
 
 
 class Ltetromino(Tetromino):
     _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
 
-    def draw_tetromino(self, window):
-        for i in range(3):
-            rect = (self._start_x + i * self._size, self._start_y + self._size, self._size, self._size)
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + i * self._size, self._start_y, self._size, self._size)
             self.add_rectangle(rect)
-        rect = (self._start_x, self._start_y + self._size + self._size, self._size, self._size)
+        rect = (self._start_x, self._start_y + self._size, self._size, self._size)
         self.add_rectangle(rect)
 
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:3])
 
 class LtetrominoTwo(Tetromino):
     _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
 
-    def draw_tetromino(self, window):
-        for i in range(3):
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_height()):
             rect = (self._start_x + self._size, self._start_y + i * self._size, self._size, self._size)
             self.add_rectangle(rect)
         rect = (self._start_x, self._start_y, self._size, self._size)
         self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
+
+class LtetrominoThree(Tetromino):
+    _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
+
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + self._size*i, self._start_y + self._size, self._size, self._size)
+            self.add_rectangle(rect)
+        rect = (self._start_x+self._size*self.get_index_height(), self._start_y, self._size, self._size)
+        self.add_rectangle(rect)
+
+
+class LtetrominoFour(Tetromino):
+    _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
+
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + self._size*i, self._start_y + self._size, self._size, self._size)
+            self.add_rectangle(rect)
+        rect = (self._start_x, self._start_y+self.get_size()*self.get_index_height(), self._size, self._size)
+        self.add_rectangle(rect)
+
+
 class Jtetromino(Tetromino):
     _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
 
-    def draw_tetromino(self, window):
-        for i in range(3):
-            rect = (self._start_x + self._size * 0.5, self._start_y + i * self._size, self._size, self._size)
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_height()):
+            rect = (self._start_x, self._start_y + i * self._size, self._size, self._size)
             self.add_rectangle(rect)
-        rect = (self._start_x + self._size * 0.5 + self._size, self._start_y, self._size, self._size)
+        rect = (self._start_x + self._size, self._start_y, self._size, self._size)
         self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
 
 class JtetrominoTwo(Tetromino):
     _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
 
-    def draw_tetromino(self, window):
-        for i in range(3):
-            rect = (self._start_x + i * self._size, self._start_y + self._size * 0.5, self._size, self._size)
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + i * self._size, self._start_y, self._size, self._size)
             self.add_rectangle(rect)
-        rect = (self._start_x + 2 * self._size, self._start_y + self._size + self._size * 0.5, self._size, self._size)
+        rect = (self._start_x + 2 * self._size, self._start_y + self._size, self._size, self._size)
         self.add_rectangle(rect)
 
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
 
 class JtetrominoThree(Tetromino):
     _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
 
-    def draw_tetromino(self, window):
-        for i in range(3):
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
             rect = (self._start_x + i * self._size, self._start_y + self._size, self._size, self._size)
             self.add_rectangle(rect)
         rect = (self._start_x, self._start_y, self._size, self._size)
         self.add_rectangle(rect)
 
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
 
 class JtetrominoFour(Tetromino):
     _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
 
-    def draw_tetromino(self, window):
-        for i in range(3):
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_height()):
             rect = (self._start_x + self._size, self._start_y + i * self._size, self._size, self._size)
             self.add_rectangle(rect)
-        rect = (self._start_x, self._start_y + self._size * 2, self._size, self._size)
+        rect = (self._start_x, self._start_y + self._size * self.get_index_width(), self._size, self._size)
         self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
 
 class Stetromino(Tetromino):
     _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
 
-    def draw_tetromino(self, window):
-        for i in range(2):
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()-1):
             rect = (self._start_x + i * self._size, self._start_y, self._size, self._size)
             self.add_rectangle(rect)
-        for i in range(2):
+        for i in range(self.get_index_height()):
             rect = (self._start_x + i * self._size + self._size, self._start_y + self._size, self._size, self._size)
             self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
 
 class StetrominoTwo(Tetromino):
     _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
 
-    def draw_tetromino(self, window):
-        for i in range(2):
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()-1):
             rect = (self._start_x + i * self._size + self._size, self._start_y, self._size, self._size)
             self.add_rectangle(rect)
-        for i in range(2):
+        for i in range(self.get_index_height()):
             rect = (self._start_x + i * self._size, self._start_y + self._size, self._size, self._size)
             self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
 
 class StetrominoThree(Tetromino):
     _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
 
-    def draw_tetromino(self, window):
-        for i in range(2):
-            rect = (self._start_x + i * self._size + self._size * 0.5, self._start_y + i * self._size, self._size, self._size)
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + i * self._size, self._start_y + i * self._size, self._size, self._size)
             self.add_rectangle(rect)
-        for i in range(2):
-            rect = (self._start_x + i * self._size + self._size * 0.5, self._start_y + i * self._size + self._size, self._size, self._size)
+        for i in range(self.get_index_height()-1):
+            rect = (self._start_x + i * self._size, self._start_y + i * self._size + self._size, self._size, self._size)
             self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
 
 class StetrominoFour(Tetromino):
     _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
 
-    def draw_tetromino(self, window):
-        for i in range(2):
-            rect = (self._start_x + self._size + self._size * 0.5, self._start_y + i * self._size, self._size, self._size)
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + self._size, self._start_y + i * self._size, self._size, self._size)
             self.add_rectangle(rect)
-        for i in range(2):
-            rect = (self._start_x + self._size * 0.5, self._start_y + i * self._size + self._size, self._size, self._size)
+        for i in range(self.get_index_height()-1):
+            rect = (self._start_x, self._start_y + i * self._size + self._size, self._size, self._size)
             self.add_rectangle(rect)
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+
 
 class Ttetromino(Tetromino):
     _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
 
-    def draw_tetromino(self, window):
-        for i in range(3):
-            rect = (self._start_x + i * self._size * 0.9, self._start_y + self._size * 0.5, self._size, self._size)
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + i * self._size, self._start_y, self._size, self._size)
             self.add_rectangle(rect)
-        rect = (self._start_x + self._size * 0.9, self._start_y + self._size + self._size * 0.5, self._size, self._size)
+        rect = (self._start_x + self._size, self._start_y + self._size, self._size, self._size)
         self.add_rectangle(rect)
 
-        for rectangle in self.get_square():
-            pygame.draw.rect(window, self._color, rectangle)
-            self.set_square(self.get_square()[:4])
+class TtetrominoTwo(Tetromino):
+    _square_tetromino = []
+    _index_height = 2
+    _index_width = 3
+
+    def create_tetromino(self):
+        self.delete_tetromino()
+        rect = (self._start_x + self._size, self._start_y + self._size, self._size, self._size)
+        self.add_rectangle(rect)
+        for i in range(self.get_index_width()):
+            rect = (self._start_x + i * self._size, self._start_y +self.get_size()*self.get_index_height(), self._size, self._size)
+            self.add_rectangle(rect)
 
 
-o = Otetromino()
+class TtetrominoThree(Tetromino):
+    _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
+
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_height()):
+            rect = (self._start_x + self._size, self._start_y + i * self._size, self._size, self._size)
+            self.add_rectangle(rect)
+        rect = (self._start_x, self._start_y + self._size, self._size, self._size)
+        self.add_rectangle(rect)
+
+
+class TtetrominoFour(Tetromino):
+    _square_tetromino = []
+    _index_height = 3
+    _index_width = 2
+
+    def create_tetromino(self):
+        self.delete_tetromino()
+        for i in range(self.get_index_height()):
+            rect = (self._start_x + self._size, self._start_y + i * self._size, self._size, self._size)
+            self.add_rectangle(rect)
+        rect = (self._start_x +self.get_size()*2, self._start_y + self._size, self._size, self._size)
+        self.add_rectangle(rect)
+
+
 

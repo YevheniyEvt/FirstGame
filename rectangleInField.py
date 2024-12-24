@@ -1,5 +1,4 @@
 import tetrominoes
-import pygame
 
 
 size = tetrominoes.SIZE
@@ -48,12 +47,9 @@ horizontal_lines = [
                 horizontal_line_7,
                 horizontal_line_8,
                 horizontal_line_9,
-                horizontal_line_1,
+                horizontal_line_10,
                 ]
-all_Lines = [
-            vertical_lines,
-            horizontal_lines,
-            ]
+
 """
 horizontal: 0, 80, 161, 242, 323, 404, 485, 565, 646, 727
             0, 60, 121, 182, 243, 304, 365, 426, 487, 548
@@ -61,12 +57,6 @@ horizontal: 0, 80, 161, 242, 323, 404, 485, 565, 646, 727
 
 
 def filling_line(list_rectangle):
-    # for rectangle in list_rectangle:
-    #     for i in range(2):
-    #         for j in range(10):
-    #             rect_xy = rectangle[i]
-    #             if rect_xy//10 == size*j//10 and rect_xy not in all_Lines[i][j]:
-    #                 all_Lines[i][j].append(rectangle)
 
     for rect in list_rectangle:
         if rect[0] == 0 and rect not in vertical_line_1:
@@ -109,31 +99,44 @@ def filling_line(list_rectangle):
         elif rect[1]//10 == size*9//10 and rect not in horizontal_line_10:
             horizontal_line_10.append(rect)
 
-
     plus_score = check_line()
     return plus_score
 
+
 def check_line():
-    for line in horizontal_lines:
-        if len(line) == int(tetrominoes.GAME_FIELD_WIDTH / size):
-            plus_score = len(line)
-            delete_line(line)
+    for line_h in horizontal_lines:
+        if len(line_h) == int(tetrominoes.GAME_FIELD_WIDTH / size):
+            plus_score = len(line_h)
+            del_rect_in_vert(line_h)
+            delete_line(line_h)
             return plus_score
-    for line in vertical_lines:
-        if len(line) == int(tetrominoes.GAME_FIELD_HEIGHT/size):
-            plus_score = len(line)
-            delete_line(line)
+
+    for line_v in vertical_lines:
+        if len(line_v) == int(tetrominoes.GAME_FIELD_HEIGHT/size):
+            plus_score = len(line_v)
+            del_rect_in_horiz(line_v)
+            delete_line(line_v)
             return plus_score
     return 0
 
 
 def delete_line(line):
         for i in range(len(line)):
-            rect = line[0]
-            try:
+            rect = line[-1]
+            line.remove(rect)
+            if rect in list_of_rectangle_in_the_field:
                 list_of_rectangle_in_the_field.remove(rect)
-                line.remove(rect)
-            except ValueError:
-                print(f"rect:{rect} not in {list_of_rectangle_in_the_field}")
 
 
+def del_rect_in_vert(line_h):
+    for line in vertical_lines:
+        for i in range(len(line_h)):
+            if line_h[i] in line:
+                line.remove(line_h[i])
+
+
+def del_rect_in_horiz(line_v):
+    for line in horizontal_lines:
+        for i in range(len(line_v)):
+            if line_v[i] in line:
+                line.remove(line_v[i])

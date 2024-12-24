@@ -1,5 +1,6 @@
 import pygame
 import time
+import tetrominoes
 # class Line:
 #     size = SIZE
 #
@@ -90,3 +91,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
