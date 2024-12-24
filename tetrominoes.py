@@ -10,7 +10,7 @@ PRE_GAME_WIDTH, PRE_GAME_HEIGHT = WIDTH-GAME_FIELD_WIDTH, HEIGHT*0.4
 SCORE_FIELD_WIDTH, SCORE_FIELD_HEIGHT = PRE_GAME_WIDTH, GAME_FIELD_HEIGHT - PRE_GAME_HEIGHT
 
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-
+pygame.display.set_caption("Tetromino")
 
 class Tetromino:
     _color = (149, 52, 235)

@@ -1,8 +1,8 @@
 import tetrominoes
-
+import json
 
 size = tetrominoes.SIZE
-list_of_rectangle_in_the_field = []
+
 
 vertical_line_1 = []
 vertical_line_2 = []
@@ -49,12 +49,33 @@ horizontal_lines = [
                 horizontal_line_9,
                 horizontal_line_10,
                 ]
-
+all_line = [
+            vertical_lines,
+            horizontal_lines
+]
 """
 horizontal: 0, 80, 161, 242, 323, 404, 485, 565, 646, 727
             0, 60, 121, 182, 243, 304, 365, 426, 487, 548
 """
 
+def reset():
+    for lines in all_line:
+        for line in lines:
+            line.clear()
+
+def load_field():
+    with open('save_direct/user.txt', 'r') as name:
+        user = name.read()
+    try:
+        with open(f"save_direct/list_ractangle_{user}.txt", 'r') as list_ract:
+            data = json.load(list_ract)
+            list_of_rectangle = [tuple(rectangle) for rectangle in data[user]]
+            return list_of_rectangle
+
+    except FileNotFoundError:
+        return []
+
+list_of_rectangle_in_the_field = load_field()
 
 def filling_line(list_rectangle):
 

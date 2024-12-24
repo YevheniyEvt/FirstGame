@@ -1,95 +1,84 @@
-import pygame
-import time
-import tetrominoes
-# class Line:
-#     size = SIZE
+# from time import sleep
+# import pygame
+# import pygame_menu
+# from pygame_menu import themes
 #
-#     def __init__(self, x, y, color, width):
-#         self.x = x
-#         self.y = y
-#         self.color = color
-#         self.width = width
+# pygame.init()
+# surface = pygame.display.set_mode((600, 400))
 #
-#     def draw_vertical_line(self, window):
-#         pygame.draw.line(window, self.color,
-#                          (self.x + self.size, self.y),
-#                          (self.x +self.size, self.y), # + HEIGHT),
-#                          self.width)
 #
-#     def draw_horizontal_line(self, window):
-#         pygame.draw.line(window, self.color,
-#                          (self.x, self.y + self.size),
-#                          (self.x + GAME_FIELD_WIDTH, self.y + self.size),
-#                          self.width)
+# def set_difficulty(value, difficulty):
+#     print(value)
+#     print(difficulty)
 #
-#     def change_x(self):
-#         self.x += self.size
 #
-#     def change_y(self):
-#         self.y += self.size
-
+# def start_the_game():
+#     mainmenu._open(loading)
+#     pygame.time.set_timer(update_loading, 30)
 #
-# def create_vertical_lines(game_field):
-#     colum_number = int(game_field.width/SIZE)
-#     x = 0
-#     for number in range(colum_number):
-#         line = Line(x, 0, (102, 99, 89), 2)
-#         x += line.size
-#         yield line
 #
-# def create_horizontal_lines(game_field):
-#     row_number = int(game_field.height/SIZE)
-#     y = 0
-#     for number in range(row_number):
-#         line = Line(0, y, (102, 99, 89), 2)
-#         y += line.size
-#         yield line
+# def level_menu():
+#     mainmenu._open(level)
+#
+# def text(text):
+#     return text
+#
+# th = themes.Theme()
+#
+# mainmenu = pygame_menu.Menu('Welcome', 600, 400, theme=themes.THEME_DARK)
+# mainmenu.add.text_input('Name: ', default='username', onchange=text)
+#
+# mainmenu.add.button('Play', start_the_game)
+# mainmenu.add.button('Levels', level_menu)
+# mainmenu.add.button('Quit', pygame_menu.events.EXIT)
+#
+# level = pygame_menu.Menu('Select a Difficulty', 600, 400, theme=themes.THEME_BLUE)
+# level.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+#
+# loading = pygame_menu.Menu('Loading the Game...', 600, 400, theme=themes.THEME_DARK)
+# loading.add.progress_bar("Progress", progressbar_id="1", default=0, width=200, )
+#
+# arrow = pygame_menu.widgets.LeftArrowSelection(arrow_size=(10, 15))
+#
+# update_loading = pygame.USEREVENT + 0
+#
+# while True:
+#     events = pygame.event.get()
+#     for event in events:
+#         if event.type == update_loading:
+#             progress = loading.get_widget("1")
+#             progress.set_value(progress.get_value() + 1)
+#             if progress.get_value() == 100:
+#                 pygame.time.set_timer(update_loading, 0)
+#         if event.type == pygame.QUIT:
+#             exit()
+#
+#     if mainmenu.is_enabled():
+#         mainmenu.update(events)
+#         mainmenu.draw(surface)
+#         if (mainmenu.get_current().get_selected_widget()):
+#             arrow.draw(surface, mainmenu.get_current().get_selected_widget())
+#
+#     pygame.display.update()
 
+# with open('save.txt', 'a') as file:
+#     file.writelines(f"nor:40 \n")
 
-window = pygame.display.set_mode((700,700))
-size = 60
-start_x = size*5
-start_y = size 
+new_lis = []
+username = f"gev:30"
+with open('save_direct/save.txt', 'r') as file:
+    lis = file.read().strip().split()
+    print(lis)
+    if username in lis:
+        lis.remove(username)
+        print(lis)
+        new_lis.extend(lis)
+        print(new_lis)
+        with open('save_direct/save.txt', 'w') as file2:
+            file2.write("\n".join(new_lis))
+    else:
+        with open('save_direct/save.txt', 'a') as file3:
+            file3.write(f"\n{username}")
 
-def draw():
-    window.fill((0, 0, 0))
-
-    for i in range(2):
-        rect = (start_x + i * size, start_y, size, size)
-        pygame.draw.rect(window, 'blue', rect)
-    for i in range(2):
-
-        rect = (start_x + i * size, start_y + size, size, size)
-        pygame.draw.rect(window, 'blue', rect)
-
-def main():
-    clock = pygame.time.Clock()
-    global start_x
-    global start_y
-    run = True
-    while run:
-        clock.tick(60)
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            if pygame.mouse.get_pressed()[0]:  # and not tetromino_in_the_field(o_tetromino, mouse_x, mouse_y):
-                pygame.mouse.set_visible(0)
-                event_start_x, event_start_y = pygame.mouse.get_rel()
-                if event.type == pygame.MOUSEMOTION:
-
-                    start_x = start_x + event_start_x
-                    start_y = start_y + event_start_y
-            else:pygame.mouse.set_visible(1)
-
-        draw()
-        pygame.display.update()
-    pygame.quit()
-
-
-if __name__ == "__main__":
-    main()
 
 
