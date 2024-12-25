@@ -3,3 +3,4 @@
 - There is a menu where you can change the difficult ( increase or decrease the variety of figures), write your name, it will be displayed on the field.
 - The game saves the results based on the player's name, and loads them the next time the player logs in.
 - You can change the window size or the number of cells on the playing field.
+- You can also restart and start a new game during the game.
